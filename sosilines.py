@@ -21,12 +21,14 @@ try:
 except:
     crscode = 99
     print('TRANSSYS not implemented yet')
-    
+dataeier = 'NORSAR' 
+dataprodusent = 'NORSAR'   
 layer = qgis.utils.iface.activeLayer()
 crsid = layer.crs().authid()
-name=layer.name()
-filename=f"{name}.sos"
-unit=0.01
+name = layer.name()
+extent = layer.extent()
+filename = f"{name}.sos"
+unit = 0.01
 objectid = 0
 objtype = 'Kabelgrøft'
 with open (filename,'w') as outfile:
@@ -35,7 +37,14 @@ with open (filename,'w') as outfile:
 ..TRANSPAR
 ...KOORDSYS {crscode}
 ...ORIGO-NØ 0 0
-...ENHET {unit}"""
+...ENHET {unit}
+..OMRÅDE
+...MIN-NØ {round(extent.yMinimum()/unit)*unit} {round(extent.xMinimum()/unit)*unit}
+...MAX-NØ {round(extent.yMaximum()/unit)*unit} {round(extent.xMaximum()/unit)*unit}
+..SOSI-NIVÅ 4
+..EIER {dataeier}
+..PRODUSENT {dataprodusent}
+..SOSI-VERSJON 4.5"""
     print(hode)
     outfile.write(hode)
     for feature in layer.getFeatures():
